@@ -2,6 +2,7 @@ package homehub
 
 import (
 	"crypto/md5"
+        "crypto/tls"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -129,7 +130,12 @@ func (r *genericRequest) send() (re *response, err error) {
 	dump, _ := httputil.DumpRequest(httpRequest, true)
 	debug.Println(string(dump))
 
-	httpClient := &http.Client{}
+tr := &http.Transport{
+            TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+    }
+
+        httpClient := &http.Client{Transport: tr}
+
 	httpResponse, err := httpClient.Do(httpRequest)
 	if err != nil {
 		return nil, err

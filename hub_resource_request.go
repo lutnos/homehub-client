@@ -1,6 +1,7 @@
 package homehub
 
 import (
+  	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -46,7 +47,11 @@ func (r *hubResourceRequest) send() (re *response, err error) {
 	dump, _ := httputil.DumpRequest(httpRequest, true)
 	debug.Println(string(dump))
 
-	httpClient := &http.Client{}
+tr := &http.Transport{
+            TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+    }
+
+	httpClient := &http.Client{Transport: tr}
 	httpResponse, err := httpClient.Do(httpRequest)
 	if err != nil {
 		return nil, err
